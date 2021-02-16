@@ -38,6 +38,8 @@ class CPlayer
     void increaseVolume();
 
     void decreaseVolume();
+    void changeBrightnessOrLockScreen();
+
 
   private:
     void handleInactivityTimeout();
@@ -47,10 +49,13 @@ class CPlayer
     void populateMusicFileList();
     void updateGui();
     void vibrate();
+    void setScreenBrightness(uint8_t brightness);
 
     Audio m_audio{};
-
-    int                 m_currentVolume{8};
+    const static uint8_t minBrightness = 32;
+    const static uint8_t maxBrightness = 255;
+    int                 m_currentVolume{minBrightness};
+    uint8_t             m_currentBrightness{64};
     int                 m_activeSongIdx{ -1};
     unsigned int        m_turnOffAfterInactiveForMilliSec{5 * 60 * 1000};
     unsigned int        m_lastActivityTimestamp{0};

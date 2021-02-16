@@ -34,6 +34,7 @@ void CPlayer::initializeHardware()
 
   m_audio.setPinout(12, 0, 2);
   m_audio.setVolume(m_currentVolume);
+  setScreenBrightness(m_currentBrightness);
 
   populateMusicFileList();
 
@@ -102,7 +103,8 @@ void CPlayer::handleInactivityTimeout()
     if (isTimeoutReached)
     {
       m_audio.stopSong();
-      M5.Axp.DeepSleep(0U);  // power off
+      // M5.Axp.DeepSleep(0U);  // power off
+      M5.Axp.PowerOff();  // power off
     }
   }
 }
@@ -125,14 +127,19 @@ void CPlayer::handleTouchEvents()
 
   if (m_volumeDownWidget.isTouched(touchPoint))
   {
-    vibrate();
     decreaseVolume();
+    vibrate();
   }
 
   if (m_volumeUpWidget.isTouched(touchPoint))
   {
-    vibrate();
     increaseVolume();
+    vibrate();
+  }
+
+  if (m_lockScreenWidget.isTouched(touchPoint)) {
+    changeBrightnessOrLockScreen();
+    vibrate();
   }
 }
 
@@ -176,7 +183,7 @@ void CPlayer::updateGui()
 
 void CPlayer::updateVolume(int f_deltaVolume)
 {
-  constexpr int minVolume = 0;
+  constexpr int minVolume = 1;
   constexpr int maxVolume = 16;
 
   int newVolume = m_currentVolume + f_deltaVolume;
@@ -199,9 +206,26 @@ void CPlayer::increaseVolume()
   updateVolume(+4);
 }
 
-void CPlayer::decreaseVolume()
-{
+void CPlayer::decreaseVolume() {
   updateVolume(-4);
+}
+
+void CPlayer::changeBrightnessOrLockScreen() {
+  // M5.Axp.PowerOff();
+  // M5.Lcd.sleep();
+  m_currentBrightness += 32;
+  if (m_currentBrightness > maxBrightness) {
+    m_currentBrightness = minBrightness;
+  }
+  setScreenBrightness(m_currentBrightness);
+}
+
+void CPlayer::setScreenBrightness(uint8_t brightness) {
+  const uint16_t minVoltage = 2500;
+  const uint16_t maxVoltage = 3300;
+  uint16_t voltage = minVoltage + brightness * (maxVoltage - minVoltage) / 255;
+  Serial.printf("change brightness to %d\n, voltage=%dV", brightness, voltage);
+  M5.Axp.SetLcdVoltage(voltage);
 }
 
 void CPlayer::vibrate()

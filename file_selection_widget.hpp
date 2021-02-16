@@ -8,7 +8,7 @@ namespace singsang
 class CFileSelectionWidget : public CBaseWidget
 {
   public:
-    CFileSelectionWidget() : CBaseWidget(60, 10, 200, 10) {}
+    CFileSelectionWidget() : CBaseWidget(60, 11, 200, 10) {}
 
     void update(const int f_newItemCount, const int f_newSelectedIndex)
     {

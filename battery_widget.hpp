@@ -8,7 +8,7 @@ namespace singsang
 class CBatteryWidget : public CBaseWidget
 {
   public:
-    CBatteryWidget() : CBaseWidget(140, 15, 40, 40) {}
+    CBatteryWidget() : CBaseWidget(284, 1, 32, 22) {}
 
     void update()
     {
@@ -38,7 +38,7 @@ class CBatteryWidget : public CBaseWidget
           newIconPath = "/media/icon-battery-1.png";
         } else {
           // 20% - 0%
-          newIconPath = "/media/icon-battery-0.png";
+          newIconPath = "/media/icon-battery.png";
         }
       }
 
@@ -53,10 +53,10 @@ class CBatteryWidget : public CBaseWidget
     {
       M5.Lcd.drawPngFile(SD, m_currentIconPath.c_str(), m_positionX,
                          m_positionY, m_sizeX, m_sizeY);
-      char buf[128];
-      snprintf(buf, 128, "%.2fV", m_batteryVoltage);
-      M5.Lcd.setTextColor(0xFF808080);
-      M5.Lcd.drawString(buf, m_positionX + 42, m_positionY + 11);
+//      char buf[128]; 
+//      snprintf(buf, 128, "%.2fV", m_batteryVoltage);
+//      M5.Lcd.setTextColor(0xFF808080);
+//      M5.Lcd.drawString(buf, m_positionX + 42, m_positionY + 11);
     }
 
   private:
