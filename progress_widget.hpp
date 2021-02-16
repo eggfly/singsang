@@ -8,7 +8,7 @@ namespace singsang
 class CProgressWidget : public CBaseWidget
 {
   public:
-    CProgressWidget() : CBaseWidget(60, 225, 200, 10) {}
+    CProgressWidget() : CBaseWidget(60, 230, 200, 10) {}
 
     void update(const int f_newProgressPercentage)
     {

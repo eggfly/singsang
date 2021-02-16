@@ -11,6 +11,7 @@
 
 #include "battery_widget.hpp"
 #include "file_selection_widget.hpp"
+#include "lock_screen_widget.hpp"
 #include "next_song_widget.hpp"
 #include "progress_widget.hpp"
 #include "volume_display_widget.hpp"
@@ -57,6 +58,7 @@ class CPlayer
 
     CBatteryWidget       m_batteryWidget;
     CFileSelectionWidget m_fileSelectionWidget;
+    CLockScreenWidget    m_lockScreenWidget;
     CNextSongWidget      m_nextSongWidget;
     CProgressWidget      m_progressWidget;
     CVolumeDisplayWidget m_volumeDisplayWidget;

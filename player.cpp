@@ -45,10 +45,11 @@ void CPlayer::initializeGui()
   M5.Lcd.fillScreen(TFT_BLACK);
   M5.Lcd.setTextFont(2);
 
-  M5.Lcd.drawJpgFile(SD, "/media/logo.jpg", 60, 20, 200, 200);
+  M5.Lcd.drawJpgFile(SD, "/media/logo.jpg", 60, 28, 200, 200);
 
   m_batteryWidget.draw(false);
   m_fileSelectionWidget.draw(false);
+  m_lockScreenWidget.draw(false);
   m_nextSongWidget.draw(false);
   m_progressWidget.draw(false);
   m_volumeDisplayWidget.draw(false);
