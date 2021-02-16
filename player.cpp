@@ -8,6 +8,7 @@ void CPlayer::begin()
 {
   initializeHardware();
   initializeGui();
+  // startNextSong();
 }
 
 void CPlayer::loop()
@@ -34,7 +35,7 @@ void CPlayer::initializeHardware()
 
   m_audio.setPinout(12, 0, 2);
   m_audio.setVolume(m_currentVolume);
-  setScreenBrightness(m_currentBrightness);
+  changeBrightness(m_currentBrightness);
 
   populateMusicFileList();
 
@@ -56,6 +57,7 @@ void CPlayer::initializeGui()
   m_volumeDisplayWidget.draw(false);
   m_volumeDownWidget.draw(false);
   m_volumeUpWidget.draw(false);
+  m_songInfoWidget.draw(false);
 }
 
 void CPlayer::populateMusicFileList()
@@ -119,27 +121,35 @@ void CPlayer::handleTouchEvents()
     return;
   }
 
+  bool handled = false;
   if (m_nextSongWidget.isTouched(touchPoint))
   {
     vibrate();
     startNextSong();
+    handled = true;
   }
 
   if (m_volumeDownWidget.isTouched(touchPoint))
   {
     decreaseVolume();
     vibrate();
+    handled = true;
   }
 
   if (m_volumeUpWidget.isTouched(touchPoint))
   {
     increaseVolume();
     vibrate();
+    handled = true;
   }
 
   if (m_lockScreenWidget.isTouched(touchPoint)) {
-    changeBrightnessOrLockScreen();
+    changeBrightness(!m_currentBrightness);
     vibrate();
+  }
+
+  if (handled) {
+    changeBrightness(true);
   }
 }
 
@@ -149,12 +159,19 @@ void CPlayer::startNextSong()
   {
     return;
   }
-
-  m_activeSongIdx++;
-  if (m_activeSongIdx >= m_songFiles.size() || m_activeSongIdx < 0)
-  {
-    m_activeSongIdx = 0;
+  m_played_songs.insert(m_activeSongIdx);
+  if (m_played_songs.size() * 2 > m_songFiles.size()) {
+    Serial.println("re-shuffle.");
+    m_played_songs.clear();
   }
+  do {
+    m_activeSongIdx = random(m_songFiles.size());
+  } while (m_played_songs.find(m_activeSongIdx) != std::end(m_played_songs));
+
+//  if (m_activeSongIdx >= m_songFiles.size() || m_activeSongIdx < 0)
+//  {
+//    m_activeSongIdx = 0;
+//  }
 
   if (m_audio.isRunning())
   {
@@ -169,16 +186,18 @@ void CPlayer::updateGui()
   m_batteryWidget.update();
 
   int audioProgressPercentage = 0;
-  if (m_audio.isRunning() && m_audio.getAudioFileDuration() > 0)
-  {
-    audioProgressPercentage = 100. * m_audio.getAudioCurrentTime() /
-                              m_audio.getAudioFileDuration();
+  if (m_audio.isRunning() && m_audio.getAudioFileDuration() > 0) {
+    audioProgressPercentage = 100. * m_audio.getAudioCurrentTime() / m_audio.getAudioFileDuration();
   }
   m_progressWidget.update(audioProgressPercentage);
 
   m_fileSelectionWidget.update(m_songFiles.size(), m_activeSongIdx);
 
   m_volumeDisplayWidget.update(m_currentVolume);
+
+  if (m_activeSongIdx >= 0) {
+    m_songInfoWidget.update(m_songFiles[m_activeSongIdx]);
+  }
 }
 
 void CPlayer::updateVolume(int f_deltaVolume)
@@ -210,21 +229,17 @@ void CPlayer::decreaseVolume() {
   updateVolume(-4);
 }
 
-void CPlayer::changeBrightnessOrLockScreen() {
-  // M5.Axp.PowerOff();
-  // M5.Lcd.sleep();
-  m_currentBrightness += 32;
-  if (m_currentBrightness > maxBrightness) {
-    m_currentBrightness = minBrightness;
-  }
-  setScreenBrightness(m_currentBrightness);
+void CPlayer::changeBrightness(bool isHigh) {
+  m_currentBrightness = isHigh;
+  uint8_t brightness = m_currentBrightness ? 96 : 16;
+  setScreenBrightness(brightness);
 }
 
 void CPlayer::setScreenBrightness(uint8_t brightness) {
   const uint16_t minVoltage = 2500;
   const uint16_t maxVoltage = 3300;
   uint16_t voltage = minVoltage + brightness * (maxVoltage - minVoltage) / 255;
-  Serial.printf("change brightness to %d\n, voltage=%dV", brightness, voltage);
+  Serial.printf("change brightness to %d, voltage=%dV\n", brightness, voltage);
   M5.Axp.SetLcdVoltage(voltage);
 }
 
