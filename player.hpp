@@ -21,7 +21,7 @@ namespace singsang
 {
 class CPlayer
 {
-public:
+  public:
     CPlayer();
 
     ~CPlayer() = default;
@@ -38,7 +38,7 @@ public:
 
     void decreaseVolume();
 
-private:
+  private:
     void handleInactivityTimeout();
     void handleTouchEvents();
     void initializeGui();
@@ -49,8 +49,8 @@ private:
 
     Audio m_audio{};
 
-    int                 m_currentVolume{0};
-    int                 m_activeSongIdx{-1};
+    int                 m_currentVolume{8};
+    int                 m_activeSongIdx{ -1};
     unsigned int        m_turnOffAfterInactiveForMilliSec{5 * 60 * 1000};
     unsigned int        m_lastActivityTimestamp{0};
     std::vector<String> m_songFiles{};

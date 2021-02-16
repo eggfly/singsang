@@ -7,15 +7,15 @@ namespace singsang
 {
 class CNextSongWidget : public CBaseWidget
 {
-public:
+  public:
     CNextSongWidget() : CBaseWidget(270, 160, 40, 40) {}
 
     void update() {}
 
     void draw(const bool f_updateOnly)
     {
-        M5.Lcd.drawPngFile(SD, "/media/icon-track-next.png", m_positionX,
-                           m_positionY, m_sizeX, m_sizeY);
+      M5.Lcd.drawPngFile(SD, "/media/icon-track-next.png", m_positionX,
+                         m_positionY, m_sizeX, m_sizeY);
     }
 };
 
