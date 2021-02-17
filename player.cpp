@@ -19,6 +19,8 @@ void CPlayer::loop()
 
   updateGui();
 
+  autoPlayNextSong();
+
   handleInactivityTimeout();
 }
 
@@ -89,10 +91,15 @@ void CPlayer::populateMusicFileList()
   Serial.println(m_songFiles.size());
 }
 
-void CPlayer::handleInactivityTimeout()
-{
-  if (m_audio.isRunning())
-  {
+void CPlayer::autoPlayNextSong() {
+  if (!m_audio.isRunning() && (millis() - m_lastOperationTime) < m_autoPlayMilliSecUntilSleep) {
+    Serial.println("autoPlay: playNextSong()");
+    startNextSong();
+  }
+}
+
+void CPlayer::handleInactivityTimeout() {
+  if (m_audio.isRunning()) {
     m_lastActivityTimestamp = millis();
   }
   else
@@ -105,6 +112,7 @@ void CPlayer::handleInactivityTimeout()
     if (isTimeoutReached)
     {
       m_audio.stopSong();
+      Serial.println("Reached inactive timeout, power off...");
       // M5.Axp.DeepSleep(0U);  // power off
       M5.Axp.PowerOff();  // power off
     }
@@ -149,6 +157,7 @@ void CPlayer::handleTouchEvents()
   }
 
   if (handled) {
+    m_lastOperationTime = millis();
     changeBrightness(true);
   }
 }
@@ -168,10 +177,10 @@ void CPlayer::startNextSong()
     m_activeSongIdx = random(m_songFiles.size());
   } while (m_played_songs.find(m_activeSongIdx) != std::end(m_played_songs));
 
-//  if (m_activeSongIdx >= m_songFiles.size() || m_activeSongIdx < 0)
-//  {
-//    m_activeSongIdx = 0;
-//  }
+  //  if (m_activeSongIdx >= m_songFiles.size() || m_activeSongIdx < 0)
+  //  {
+  //    m_activeSongIdx = 0;
+  //  }
 
   if (m_audio.isRunning())
   {

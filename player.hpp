@@ -44,6 +44,7 @@ class CPlayer
 
 
   private:
+    void autoPlayNextSong();
     void handleInactivityTimeout();
     void handleTouchEvents();
     void initializeGui();
@@ -58,7 +59,9 @@ class CPlayer
     bool                m_currentBrightness{true};
     int                 m_activeSongIdx{ -1};
     unsigned int        m_turnOffAfterInactiveForMilliSec{5 * 60 * 1000};
+    const static unsigned int m_autoPlayMilliSecUntilSleep{15 * 60 * 1000};
     unsigned int        m_lastActivityTimestamp{0};
+    unsigned int        m_lastOperationTime{0};
     std::vector<String> m_songFiles{};
     std::unordered_set<int> m_played_songs{};
 
