@@ -8,7 +8,7 @@ namespace singsang
 class CVolumeDisplayWidget : public CBaseWidget
 {
   public:
-    CVolumeDisplayWidget() : CBaseWidget(10, 80, 40, 80) {}
+    CVolumeDisplayWidget() : CBaseWidget(10, 90, 40, 80) {}
 
     void update(const int f_newAudioVolume)
     {
@@ -21,9 +21,11 @@ class CVolumeDisplayWidget : public CBaseWidget
 
     void draw(const bool updateOnly)
     {
+      int levels = 5;
+      int perLevel = 4;
       const uint16_t color = M5.Lcd.color565(100, 100, 100);
 
-      for (int volumeIdx = 0; volumeIdx < 4; volumeIdx++)
+      for (int volumeIdx = 0; volumeIdx < levels; volumeIdx++)
       {
         const int pointX = m_positionX;
         const int pointY = m_positionY + 55 - 12 * volumeIdx;
@@ -37,7 +39,7 @@ class CVolumeDisplayWidget : public CBaseWidget
                                sizeY - 2, 3, color);
         }
 
-        const int barIsActive = (m_audioVolume > 4 * volumeIdx);
+        const int barIsActive = (m_audioVolume > perLevel * volumeIdx);
         const int pickColor   = barIsActive ? color : TFT_BLACK;
         M5.Lcd.fillRoundRect(pointX + 3, pointY + 3, sizeX - 6, sizeY - 6,
                              2, pickColor);

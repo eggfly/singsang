@@ -212,7 +212,7 @@ void CPlayer::updateGui()
 void CPlayer::updateVolume(int f_deltaVolume)
 {
   constexpr int minVolume = 1;
-  constexpr int maxVolume = 16;
+  constexpr int maxVolume = 21;
 
   int newVolume = m_currentVolume + f_deltaVolume;
 

@@ -8,7 +8,7 @@ namespace singsang
 class CVolumeDownWidget : public CBaseWidget
 {
   public:
-    CVolumeDownWidget() : CBaseWidget(5, 150, 64, 64) {}
+    CVolumeDownWidget() : CBaseWidget(5, 158, 64, 64) {}
 
     void draw(const bool f_updateOnly)
     {
